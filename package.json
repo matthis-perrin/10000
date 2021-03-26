@@ -1,0 +1,14 @@
+{
+  "name": "10000",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "watch": "tsc -w -p tsconfig.json",
+    "run": "node index.js"
+  },
+  "devDependencies": {
+    "ts-node": "9.1.x",
+    "typescript": "4.2.x"
+  }
+}
