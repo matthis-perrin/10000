@@ -1,4 +1,4 @@
-import { Dice, DicePoolWithTaken, DiceCombination } from "./models";
+import {Dice, DicePoolWithTaken, DiceCombination} from './models';
 
 export const INITIAL_DICE_COUNT = 6;
 
@@ -51,7 +51,7 @@ function consumeTripleIfPossible(
       counter.count++;
       counter.indexes.push(index);
       if (counter.count === 3) {
-        takenIndexes.push(...counter.indexes)
+        takenIndexes.push(...counter.indexes);
         return {dice, indexes: counter.indexes};
       }
     }
