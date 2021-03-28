@@ -1,3 +1,6 @@
+import {cpus} from 'os';
+import {exec} from 'child_process';
+
 import {Round, GameState, Strategy} from './models';
 import {INITIAL_DICE_COUNT, randomDice, findTakeableDiceCombinations} from './dice';
 
@@ -27,7 +30,6 @@ interface SimulationResult {
 
 export function simulateStrategy(strategy: Strategy, rounds: number): SimulationResult {
   const t = Date.now();
-  console.log(`Running ${rounds.toLocaleString()} rounds`);
   let sum: number = 0;
   let best = 0;
   let bestGameState = initialGameState();
@@ -118,4 +120,24 @@ export function applyStrategy(strategy: Strategy, gameState: GameState): number 
 
   // If we continue, recursive call
   return applyStrategy(strategy, gameState);
+}
+
+const PROCESS_COUNT = cpus().length;
+
+export async function multiThreadedStrategy(rounds: number): Promise<number> {
+  const results = await Promise.all(
+    [...new Array(PROCESS_COUNT)].map(
+      (_, i) =>
+        new Promise<number>((resolve, reject) => {
+          exec(
+            // `./node_modules/.bin/ts-node process.ts ${Math.floor(rounds / PROCESS_COUNT)}`,
+            `node process.js ${Math.floor(rounds / PROCESS_COUNT)}`,
+            (err, stdout, stderr) => {
+              return err ? reject(stderr) : resolve(parseFloat(stdout));
+            }
+          );
+        })
+    )
+  );
+  return results.reduce((sum, val) => sum + val, 0) / PROCESS_COUNT;
 }
